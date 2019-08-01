@@ -45,10 +45,11 @@ def get_pic(listimageUrl):
     imgtitle = m.hexdigest()
 
     # 图片标题 将？转——
-    # imgtitle = str(soup.find("h2", class_="main-title").get_text()).replace("?",'_')
+    signpath = soup.find("h2", class_="main-title").get_text().replace('?','_')
+
     if imgtitle is None:
         downloadImg(imgsrc[0]["src"])
-    downloadImg(imgsrc[0]["src"], imgtitle)
+    downloadImg(imgsrc[0]["src"], imgtitle,signpath)
     # time.sleep(1)
 
 # https://www.mzitu.com/179288
@@ -65,7 +66,7 @@ def downloadImg(imgeurl, name=None, signpath=''):
     print(imgeurl + "正在下载图片...")
     img = requests.get(imgeurl, headers=headers)
     # img = GetHtml(imgeurl)
-    paths = os.getcwd() + os.sep + "image" + os.sep + signpath
+    paths = os.getcwd() + os.sep + "image" + os.sep + signpath + os.sep
     # 判断路径是否存在
     if not os.path.exists(paths):
         os.makedirs(paths)
