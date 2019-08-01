@@ -61,11 +61,11 @@ def get_pic_num(listUrl):
 
 
 # 下载图片(单线程)
-def downloadImg(imgeurl, name=None):
+def downloadImg(imgeurl, name=None, signpath=''):
     print(imgeurl + "正在下载图片...")
     img = requests.get(imgeurl, headers=headers)
     # img = GetHtml(imgeurl)
-    paths = os.getcwd() + os.sep + "image" + os.sep
+    paths = os.getcwd() + os.sep + "image" + os.sep + signpath
     # 判断路径是否存在
     if not os.path.exists(paths):
         os.makedirs(paths)
