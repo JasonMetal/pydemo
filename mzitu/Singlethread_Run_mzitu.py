@@ -72,7 +72,8 @@ def downloadImg(imgeurl, name=None, signpath=''):
     if name is None:
         name = time.strftime("%Y%m%d%H%M%S", time.localtime()) + str(random.randint(10000, 99999)) + ".jpg"
     else:
-        name = name + str(random.randint(100, 999)) + ".jpg"
+        # name = name + str(random.randint(100, 999)) + ".jpg"
+        name = name + ".jpg"
 
     if not os.path.isfile(paths + name):
         with open(paths + name, 'ab') as f:
