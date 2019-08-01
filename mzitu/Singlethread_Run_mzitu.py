@@ -7,6 +7,8 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
+
+
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
     'Connection': 'Keep-Alive',
@@ -38,7 +40,7 @@ def get_pic(listimageUrl):
     # 标题进行md5加密
     str = imgsrc[0]["src"]
     m = hashlib.md5()
-    m.update(str.encode("utf8"))
+    m.update(str.encode())
     m.hexdigest()
     imgtitle = m.hexdigest()
 
@@ -94,4 +96,5 @@ for html in parseHtml(htmls):
         # t.start()
         # t.join()
 print("下载结束")
+
 
