@@ -46,8 +46,8 @@ def get_pic(imageUrl):
 
     # 图片标题 将？转——
     signpath = soup.find("h2", class_="main-title").get_text().replace('?','_')
-    if "(" in signpath:
-        signpath = signpath[:signpath.index("(")]
+    if "（" in signpath:
+        signpath = signpath[:signpath.index("（")]
 
     if imgtitle is None:
         downloadImg(imgsrc[0]["src"])
