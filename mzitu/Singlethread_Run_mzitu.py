@@ -29,11 +29,11 @@ def parseHtml(html):
 
 
 # 获取妹子的图片
-def get_pic(listimageUrl):
-    print(listimageUrl + "正在解析...")
-    listhtml = GetHtml(listimageUrl)
+def get_pic(imageUrl):
+    print(imageUrl + "正在解析...")
+    imageHtml = GetHtml(imageUrl)
 
-    soup = BeautifulSoup(listhtml, "lxml")
+    soup = BeautifulSoup(imageHtml, "lxml")
     imgsrc = soup.find("div", class_="main-image").find_all("img")
 
 
@@ -51,8 +51,8 @@ def get_pic(listimageUrl):
 
     if imgtitle is None:
         downloadImg(imgsrc[0]["src"])
-    downloadImg(imgsrc[0]["src"], imgtitle,signpath)
-    # time.sleep(1)
+    downloadImg(imgsrc[0]["src"], imgtitle, signpath)
+    time.sleep(1)
 
 # https://www.mzitu.com/179288
 # 获取页面有多少下一页
@@ -85,16 +85,14 @@ def downloadImg(imgeurl, name=None, signpath=''):
 
 
 
-
-
 print("下载开始")
 url = "http://www.mzitu.com/all"
 pic = "http://www.mzitu.com/108528"
 htmls = GetHtml(url)
 for html in parseHtml(htmls):
-    print(html["href"],html.get_text())
+    # print(html["href"],html.get_text())
     for i in range(get_pic_num(html["href"])):
-        listUrl = "{}{}{}".format(pic, "/", i + 1)
+        listUrl = "{}{}{}".format(pic, "/", i)
         get_pic(listUrl)
         # t = threading.Thread(target=get_pic, args=(listUrl,))
         # t.start()
