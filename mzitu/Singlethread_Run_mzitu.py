@@ -20,7 +20,7 @@ headers = {
 def GetHtml(url):
     try:
         requests.packages.urllib3.disable_warnings()
-        return requests.get(url, headers=headers,verify=False).text
+        return requests.get(url, headers=headers, verify=False).text
     except:
         print(url+"异常")
         return None
@@ -72,7 +72,8 @@ def get_pic_num(listUrl):
 # 下载图片(单线程)
 def downloadImg(imgeurl, name=None, signpath=''):
     print(imgeurl + "正在下载图片...")
-    img = requests.get(imgeurl, headers=headers)
+    requests.packages.urllib3.disable_warnings()
+    img = requests.get(imgeurl, headers=headers, verify=False)
     # img = GetHtml(imgeurl)
     if img is not  None:
         paths = os.getcwd() + os.sep + "image" + os.sep + signpath + os.sep
