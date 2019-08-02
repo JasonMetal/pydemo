@@ -1,4 +1,3 @@
-import _thread
 import hashlib
 import os
 import random
@@ -7,13 +6,12 @@ import time
 import requests
 from bs4 import BeautifulSoup
 
-
-
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
     'Connection': 'Keep-Alive',
     'Referer': "http://www.mzitu.com/99566"
 }
+
 
 
 # 获取页面html
@@ -55,12 +53,12 @@ def get_pic(imageUrl):
         if imgtitle is None:
             downloadImg(imgsrc[0]["src"])
         downloadImg(imgsrc[0]["src"], imgtitle, signpath)
-        # time.sleep(1)
+        time.sleep(2)
 
 
 # https://www.mzitu.com/179288
 # 获取页面有多少下一页
-def get_pic_num(listUrl):
+def get_pic_num(listUrl ):
     html=GetHtml(listUrl)
     if html is not  None:
         soup = BeautifulSoup(html, "lxml")
@@ -75,7 +73,7 @@ def downloadImg(imgeurl, name=None, signpath=''):
     requests.packages.urllib3.disable_warnings()
     img = requests.get(imgeurl, headers=headers, verify=False)
     # img = GetHtml(imgeurl)
-    if img is not  None:
+    if img is not None:
         paths = os.getcwd() + os.sep + "image" + os.sep + signpath + os.sep
         # 判断路径是否存在
         if not os.path.exists(paths):
@@ -98,13 +96,13 @@ url = "http://www.mzitu.com/all"
 pic = "http://www.mzitu.com/108528"
 htmls = GetHtml(url)
 for html in parseHtml(htmls):
-    # print(html["href"],html.get_text())
+    print(html["href"],html.get_text())
     for i in range(get_pic_num(html["href"])):
-        listUrl = "{}{}{}".format(pic, "/", i)
-        get_pic(listUrl)
-        # t = threading.Thread(target=get_pic, args=(listUrl,))
-        # t.start()
-        # t.join()
+        listUrl = "{}{}{}".format(pic, "/", i+1)
+        # get_pic(listUrl)
+        t = threading.Thread(target=get_pic, args=(listUrl,))
+        t.start()
+        t.join()
 print("下载结束")
 
 
