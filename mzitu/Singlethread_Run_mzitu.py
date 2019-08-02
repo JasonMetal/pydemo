@@ -9,7 +9,9 @@ from bs4 import BeautifulSoup
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
     'Connection': 'Keep-Alive',
-    'Referer': "http://www.mzitu.com/99566"
+    'Referer': "http://www.mzitu.com/99566",
+    'Cookie': "Hm_lvt_dbc355aef238b6c32b43eacbbf161c3c=1564754055,1564754120,1564754207; Hm_lpvt_dbc355aef238b6c32b43eacbbf161c3c=1564755195",
+
 }
 
 
@@ -70,7 +72,9 @@ def get_pic_num(listUrl ):
 # 下载图片(单线程)
 def downloadImg(imgeurl, name=None, signpath=''):
     print(imgeurl + "正在下载图片...")
+
     requests.packages.urllib3.disable_warnings()
+
     img = requests.get(imgeurl, headers=headers, verify=False)
     # img = GetHtml(imgeurl)
     if img is not None:
@@ -89,17 +93,19 @@ def downloadImg(imgeurl, name=None, signpath=''):
                 f.write(img.content)
                 print(paths + name + "下载完成")
 
-
-url = "http://www.mzitu.com/all"
-pic = "http://www.mzitu.com/108528"
-htmls = GetHtml(url)
-for html in parseHtml(htmls):
-    print(html["href"], html.get_text())
-    pic = html["href"]
+def run():
+    url = "http://www.mzitu.com/all"
+    # pic = "http://www.mzitu.com/108528"
+    htmls = GetHtml(url)
+    pics=[]
+    for html in parseHtml(htmls):
+        pics.append(html["href"])
+    pic = random.sample(pics,1)[0]
     for i in range(get_pic_num(pic)):
         listUrl = "{}{}{}".format(pic, "/", i+1)
-        # get_pic(listUrl)
         t = threading.Thread(target=get_pic, args=(listUrl,))
         t.start()
         t.join()
 
+if __name__ == "__main__":
+    run()
