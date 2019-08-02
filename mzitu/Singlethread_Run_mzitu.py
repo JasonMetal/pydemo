@@ -53,7 +53,7 @@ def get_pic(imageUrl):
         if imgtitle is None:
             downloadImg(imgsrc[0]["src"])
         downloadImg(imgsrc[0]["src"], imgtitle, signpath)
-        time.sleep(2)
+        # time.sleep(2)
 
 
 # https://www.mzitu.com/179288
@@ -90,19 +90,16 @@ def downloadImg(imgeurl, name=None, signpath=''):
                 print(paths + name + "下载完成")
 
 
-
-print("下载开始")
 url = "http://www.mzitu.com/all"
 pic = "http://www.mzitu.com/108528"
 htmls = GetHtml(url)
 for html in parseHtml(htmls):
-    print(html["href"],html.get_text())
-    for i in range(get_pic_num(html["href"])):
+    print(html["href"], html.get_text())
+    pic = html["href"]
+    for i in range(get_pic_num(pic)):
         listUrl = "{}{}{}".format(pic, "/", i+1)
         # get_pic(listUrl)
         t = threading.Thread(target=get_pic, args=(listUrl,))
         t.start()
         t.join()
-print("下载结束")
-
 
