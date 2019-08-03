@@ -78,7 +78,7 @@ def downloadImg(imgeurl, name=None, signpath=''):
     img = requests.get(imgeurl, headers=headers, verify=False)
     # img = GetHtml(imgeurl)
     if img is not None:
-        paths = os.getcwd() + os.sep + "image" + os.sep + signpath + os.sep
+        paths = os.getcwd() + os.sep + "images" + os.sep + signpath + os.sep
         # 判断路径是否存在
         if not os.path.exists(paths):
             os.makedirs(paths)
