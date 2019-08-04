@@ -9,3 +9,9 @@ pip install lxml
 ~~~
 nohup python3 Singlethread_Run_mzitu.py > output.out 2>&1 &
 ~~~
+
+### 定时执行
+~~~
+*/1 * * * *  python3 Singlethread_Run_mzitu.py
+~~~
+
