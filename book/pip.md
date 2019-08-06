@@ -1,18 +1,53 @@
-### Centos安装python3
+### pip简介
+
+pip是Python包管理工具，该工具提供了对Python包的查找、下载、安装、卸载的功能。
+
+### 檢查是否安裝并查看版本
 ~~~
-yum -y groupinstall "Development tools"
-yum -y install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gdbm-devel db4-devel libpcap-devel xz-devel libffi-devel
-wget https://www.python.org/ftp/python/3.7.4/Python-3.7.4.tar.xz
-tar -xvJf Python-3.7.4.tar.xz
-cd Python-3.7.4
-./configure --prefix=/usr/local/python3 --enable-shared --enable-universalsdk --enable-optimizations
-make && make install
-echo "/usr/local/python3/lib" >> /etc/ld.so.conf.d/python3.conf && ldconfig
-ln -s /usr/local/python3/bin/python3.7  /usr/bin/python3
-ln -s /usr/local/python3/bin/pip3  /usr/bin/pip3
+pip --version
 ~~~
 
-### window安装
+### 常见的命令
 ~~~
-https://www.python.org/ftp/python/3.7.4/python-3.7.4.exe
+获取帮助
+pip --help
+
+升级 pip
+pip install -U pip
+
+安装包
+pip install requests              # 最新版本
+pip install requests==19.2       # 指定版本
+pip install 'requests>=1.0'     # 最小版本
+
+升级包
+pip install --upgrade requests
+
+卸载包
+pip uninstall requests
+
+搜索包
+pip search requests
+
+显示安装包信息
+pip show 
+
+查看指定包的详细信息
+pip show -f requests
+
+列出已安装的包
+pip list
+
+查看可升级的包
+pip list -o
+~~~
+
+### 项目包管理
+#### 生成requirements.txt文件
+~~~
+pip freeze > requirements.txt
+~~~
+#### 安装requirements.txt依赖
+~~~
+pip install -r requirements.txt
 ~~~
