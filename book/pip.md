@@ -1,6 +1,7 @@
 ### pip简介
 
 pip是Python包管理工具，该工具提供了对Python包的查找、下载、安装、卸载的功能。
+web搜索包 https://pypi.org
 
 ### 檢查是否安裝并查看版本
 ~~~
