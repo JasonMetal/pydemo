@@ -107,14 +107,12 @@ if __name__ == "__main__":
     fatherurl = get_fatherurl()
     # 去除最后一个
     fatherurl.pop()
+    # 倒叙排序
     fatherurl.reverse()
     for furl in fatherurl:
         childurl =fatherurl_Get_childurl(furl)
-
-
         childurllen = len(childurl)
         for i in range(childurllen):
-
             # 产生线程的实例
             t = threading.Thread(target=put_childurl, args=(childurl[i],))
             # 线程守护
