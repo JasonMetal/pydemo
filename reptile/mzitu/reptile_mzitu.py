@@ -1,3 +1,4 @@
+
 import hashlib
 import os
 import random
@@ -5,6 +6,8 @@ import threading
 import time
 import requests
 from bs4 import BeautifulSoup
+
+from multiprocessing import Pool, Process
 
 headers = {
     'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240",
@@ -25,18 +28,10 @@ def GetHtml(url):
         print(url+"异常")
         return None
 
-
-
-# 定义一个解析妹子总页面的方法，来获取单个妹子的链接
-def parseHtml(html):
-    soup = BeautifulSoup(html, "lxml")
-    return soup.select("a[target='_blank']")
-
-
-# 获取妹子的图片
-def get_pic(imageUrl):
-    print(imageUrl + "正在解析...")
-    imageHtml = GetHtml(imageUrl)
+# 获取妹子的图片并下载
+def put_childurl(childurl):
+    print(childurl + "正在解析...")
+    imageHtml = GetHtml(childurl)
     if imageHtml is not None:
         soup = BeautifulSoup(imageHtml, "lxml")
         imgsrc = soup.find("div", class_="main-image").find_all("img")
@@ -46,7 +41,6 @@ def get_pic(imageUrl):
         m.update(str.encode())
         m.hexdigest()
         imgtitle = m.hexdigest()
-
         # 图片标题 将？转——
         signpath = soup.find("h2", class_="main-title").get_text().replace('?','_')
         if "（" in signpath:
@@ -55,26 +49,13 @@ def get_pic(imageUrl):
         if imgtitle is None:
             downloadImg(imgsrc[0]["src"])
         downloadImg(imgsrc[0]["src"], imgtitle, signpath)
-        # time.sleep(2)
 
-
-# https://www.mzitu.com/179288
-# 获取页面有多少下一页
-def get_pic_num(listUrl ):
-    html=GetHtml(listUrl)
-    if html is not  None:
-        soup = BeautifulSoup(html, "lxml")
-        list = soup.find("div", class_="pagenavi").find_all("span")
-        return int(list[-2].string)
-    return 0
 
 
 # 下载图片(单线程)
 def downloadImg(imgeurl, name=None, signpath=''):
     print(imgeurl + "正在下载图片...")
-
     requests.packages.urllib3.disable_warnings()
-
     img = requests.get(imgeurl, headers=headers, verify=False)
     # img = GetHtml(imgeurl)
     if img is not None:
@@ -87,25 +68,64 @@ def downloadImg(imgeurl, name=None, signpath=''):
         else:
             # name = name + str(random.randint(100, 999)) + ".jpg"
             name = name + ".jpg"
-
         if not os.path.isfile(paths + name):
             with open(paths + name, 'ab') as f:
                 f.write(img.content)
                 print(paths + name + "下载完成")
 
-def run():
+
+# 获取总共的url
+def get_fatherurl():
     url = "http://www.mzitu.com/all"
-    # pic = "http://www.mzitu.com/108528"
+    father_Url = []
     htmls = GetHtml(url)
-    pics=[]
-    for html in parseHtml(htmls):
-        pics.append(html["href"])
-    pic = random.sample(pics,1)[0]
-    for i in range(get_pic_num(pic)):
-        listUrl = "{}{}{}".format(pic, "/", i+1)
-        t = threading.Thread(target=get_pic, args=(listUrl,))
-        t.start()
-        t.join()
+    if htmls is not None:
+        soup = BeautifulSoup(htmls, "lxml")
+        parseHtml = soup.select("a[target='_blank']")
+        for html in parseHtml:
+            father_Url.append(html["href"])
+    return father_Url
+
+# 根据url获取总共有多少图片可以下载
+def fatherurl_Get_childurl(fatherUrl):
+    # "http://www.mzitu.com/108528"
+    child_url =[]
+    html = GetHtml(fatherUrl)
+    if html is not  None:
+        soup = BeautifulSoup(html, "lxml")
+        list = soup.find("div", class_="pagenavi").find_all("span")
+        child_num =int(list[-2].string)
+        for i in range(child_num):
+            listUrl = "{}{}{}".format(fatherUrl, "/", i + 1)
+            child_url.append(listUrl)
+    return child_url
+
+
+
 
 if __name__ == "__main__":
-    run()
+    fatherurl = get_fatherurl()
+    # 去除最后一个
+    fatherurl.pop()
+    fatherurl.reverse()
+    for furl in fatherurl:
+        childurl =fatherurl_Get_childurl(furl)
+
+
+        childurllen = len(childurl)
+        for i in range(childurllen):
+
+            # 产生线程的实例
+            t = threading.Thread(target=put_childurl, args=(childurl[i],))
+            # 线程守护
+            t.setDaemon(True)
+            t.start()
+            t.join()
+
+        # for i in range(childurllen):
+            # 进程
+            # p = Process(target=put_childurl, args=(childurl[i],))
+            # p.start()
+            # p.join()
+
+
